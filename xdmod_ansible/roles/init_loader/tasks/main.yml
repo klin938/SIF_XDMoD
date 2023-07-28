@@ -1,0 +1,22 @@
+- name: Get MySQL running status
+  command: mysqladmin -u{{ mysql_root }} -p{{ mysql_root_pw }} -h{{ mysql_host_ip }} --protocol=tcp processlist
+  register: mysql_status
+  changed_when: false
+  ignore_errors: true
+
+- name: Startup MySQL database if it is not running
+  command: mysqld_safe --datadir=/var/lib/mysql --no-watch
+  when: mysql_status.rc != 0
+  notify: shutdown MySQL
+
+- pause: seconds=10
+
+# this must produce a list of files with full path
+- name: Read the list of SGE data to be loaded
+  shell: "find /init_load_data/ -type f"
+  register: sge_data
+
+- name: Load data to XDMoD
+  script: xdmod_sge_data_loader.sh {{ item }}
+  with_items: "{{ sge_data.stdout_lines }}"
+

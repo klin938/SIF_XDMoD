@@ -1,0 +1,14 @@
+timezone: "Australia/Sydney"
+
+data_dir: "/build_data"
+
+# MySQL var
+mysql_root: "root"
+mysql_root_pw: "root"
+mysql_host_ip: "127.0.0.1"
+
+xdmod_ver: "9.5.0-1.0"
+xdmod_email: "pwbc_admin@garvan.org.au"
+xdmod_db_user: "xdmod"
+xdmod_db_pw: "xdmod"
+

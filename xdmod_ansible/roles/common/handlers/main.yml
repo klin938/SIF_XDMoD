@@ -1,0 +1,2 @@
+- name: shutdown MySQL
+  command: mysqladmin -u{{ mysql_root }} -p{{ mysql_root_pw }} -h{{ mysql_host_ip }} --protocol=tcp shutdown

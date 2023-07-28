@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# {{ ansible_managed }}
+#
+
+exec >> /tmp/xdmod_cron_daily.log
+exec 2>&1
+
+printf "\n############################$(date)####################################\n"
+
+eval $(ssh-agent -s)
+ssh-add /xdmod_ansible/roles/common/files/dice_sif_rsa
+
+cd /dice_sge_accounting
+git pull
+
+sleep 10
+
+./xdmod_git_loader.sh $0 "$(cat FROM_COMMIT_HASH)"
+
+exit 0

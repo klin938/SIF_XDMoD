@@ -1,0 +1,62 @@
+- name: Install XDMoD dependencies
+  yum:
+    name:
+      - bzip2
+      - chromium-headless
+      - cronie
+      - gmp-devel
+      - java-1.8.0-openjdk
+      - java-1.8.0-openjdk-devel
+      - jq
+      - libreoffice
+      - librsvg2-tools
+      - logrotate
+      - perl-Image-ExifTool
+      - php
+      - php-cli
+      - php-gd
+      - php-gmp
+      - php-mbstring
+      - php-mysql
+      - php-pdo
+      - php-pear-MDB2
+      - php-pear-MDB2-Driver-mysql
+      - php-pecl-apcu
+      - php-xml
+    state: present
+    update_cache: yes
+    enablerepo: epel
+  register: yum_res
+  retries: 10
+  until: yum_res is succeeded
+  delay: 5
+
+- name: Set timezone for PHP
+  command: "sed -i 's,;date.timezone =,date.timezone = {{ timezone }},g' /etc/php.ini"
+
+- name: Install XDMoD RPM
+  yum:
+    name:
+      - "{{ data_dir }}/xdmod/xdmod-{{ xdmod_ver }}.el7.noarch.rpm"
+    state: present
+
+- name: Deploy xdmod-setup expect script
+  template: src=xdmod-setup.exp.j2 dest=/tmp/xdmod-setup.exp
+            owner=root group=root mode=0744
+
+- name: Deploy XDMoD preconfigured conf files
+  template: src={{ item }} dest=/etc/xdmod/{{ item | basename | regex_replace('\.j2','') }}
+            owner=root group=root mode=0644
+  with_fileglob:
+    - ../templates/etc_xdmod/*.j2
+
+- name: Run xdmod-setup expect script
+  command: /tmp/xdmod-setup.exp
+
+- pause: seconds=10
+
+- name: Install XDMoD cron jobs /etc/cron.daily
+  template: src={{ item }} dest=/etc/cron.daily/{{ item | basename | regex_replace('\.j2','') }}
+            owner=root group=root mode=0755
+  with_fileglob:
+    - ../templates/*.cron.daily.j2

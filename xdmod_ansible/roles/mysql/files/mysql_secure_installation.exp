@@ -1,0 +1,41 @@
+#!/usr/bin/expect -f
+
+set mysql_root_pw [lindex $argv 0];
+
+set timeout 10
+
+spawn mysql_secure_installation
+
+expect "Enter current*"
+
+send -- "\r"
+
+expect "Set root*"
+
+send -- "\r"
+
+expect "New password*"
+
+send -- "$mysql_root_pw\r"
+
+expect "Re-enter*"
+
+send -- "$mysql_root_pw\r"
+
+expect "Remove anonymous*"
+
+send -- "\r"
+
+expect "Disallow root*"
+
+send -- "\r"
+
+expect "Remove test*"
+
+send -- "\r"
+
+expect "Reload*"
+
+send -- "\r"
+
+expect eof

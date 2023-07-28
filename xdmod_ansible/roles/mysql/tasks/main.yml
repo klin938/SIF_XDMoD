@@ -1,0 +1,32 @@
+- name: Install MySQL/mariadb packages
+  yum:
+    name:
+      - mariadb
+      - mariadb-server
+    state: present
+    update_cache: yes
+    enablerepo: epel
+  register: yum_res
+  retries: 10
+  until: yum_res is succeeded
+  delay: 5
+
+- name: init MySQL db
+  command: "mysql_install_db --user=mysql --ldata=/var/lib/mysql"
+
+- name: Copy preconfigure my.cnf in place
+  template: src=my.cnf.j2 dest=/etc/my.cnf
+            owner=root group=root mode=0644
+
+# We always shutdown MySQL after container build so that 
+# it leaves no zombie mysql process on the host OS, which
+# will affect the new build.
+#
+- name: Startup MySQL database
+  command: "mysqld_safe --datadir=/var/lib/mysql --no-watch"
+  notify: shutdown MySQL
+
+- pause: seconds=10
+
+- name: Configure MySQL initial security
+  script: mysql_secure_installation.exp {{ mysql_root_pw }}

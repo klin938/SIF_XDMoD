@@ -1,0 +1,18 @@
+Bootstrap: localimage
+From: ../dice_linux_base_sif/centos/centos7_7.9.2009.sif
+
+%files
+    ./build_data/* /build_data/
+    ./xdmod_ansible/* /xdmod_ansible/
+%post
+    yum install --enablerepo=epel -y ansible vim
+
+    cd /xdmod_ansible
+
+    ansible-playbook build_xdmod.yml
+
+    rm -rf /build_data
+
+%runscript
+    /usr/bin/mysqld_safe --datadir=/var/lib/mysql --no-watch
+    /usr/sbin/apachectl -f /etc/httpd/conf/httpd.conf

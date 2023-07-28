@@ -1,0 +1,110 @@
+#!/usr/bin/expect -f
+
+#
+# {{ ansible_managed }}
+#
+
+set timeout 10
+
+spawn xdmod-setup
+
+#========================================================================
+# General Settings
+#========================================================================
+expect "Select an option*"
+send -- "1\r"
+
+expect "Site Address*"
+send -- "\r"
+
+expect "Email Address*"
+send -- "{{ xdmod_email }}\r"
+
+expect "Java*"
+send -- "\r"
+
+expect "Javac*"
+send -- "\r"
+
+expect "Chromium*"
+send -- "\r"
+
+expect "Center Logo*"
+send -- "\r"
+
+expect "Enable Dashboard*"
+send -- "off\r"
+
+expect "Overwrite config*"
+send -- "\r"
+
+expect "Press ENTER*"
+send -- "\r"
+
+#========================================================================
+# Database Settings
+#========================================================================
+expect "Select an option*"
+send -- "2\r"
+
+expect "DB Hostname*"
+send -- "{{ mysql_host_ip }}\r"
+
+expect "DB Port*"
+send -- "\r"
+
+expect "DB Username*"
+send -- "{{ xdmod_db_user }}\r"
+
+expect "DB Password*"
+send -- "{{ xdmod_db_pw }}\r"
+
+expect "(confirm) DB Password*"
+send -- "{{ xdmod_db_pw }}\r"
+
+expect "DB Admin Username*"
+send -- "{{ mysql_root }}\r"
+
+expect "DB Admin Password*"
+send -- "{{ mysql_root_pw }}\r"
+
+expect "(confirm) DB Admin*"
+send -- "{{ mysql_root_pw }}\r"
+
+expect "Overwrite config*"
+send -- "\r"
+
+expect "Press ENTER*"
+send -- "\r"
+
+#========================================================================
+# Create Admin User
+#========================================================================
+expect "Select an option*"
+send -- "5\r"
+
+expect "Username*"
+send -- "admin\r"
+
+expect "Password*"
+send -- "admin\r"
+
+expect "(confirm) Password*"
+send -- "admin\r"
+
+expect "First*"
+send -- "Admin\r"
+
+expect "Last*"
+send -- "DICE\r"
+
+expect "Email*"
+send -- "{{ xdmod_email }}\r"
+
+expect "Press ENTER*"
+send -- "\r"
+
+expect "Select an option*"
+send -- "q\r"
+
+expect eof

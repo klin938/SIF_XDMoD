@@ -1,0 +1,17 @@
+- name: Install mailing, smtp packages
+  yum:
+    name:
+      - mailx
+      - ssmtp
+    state: present
+    update_cache: yes
+    enablerepo: epel
+  register: yum_res
+  retries: 10
+  until: yum_res is succeeded
+  delay: 5
+
+- name: Copy sSMTP conf file in place
+  template: src=ssmtp.conf.j2 dest=/etc/ssmtp/ssmtp.conf
+            owner=root group=root mode=0644
+
