@@ -15,10 +15,11 @@ Start the Singularity instance:
 If the service needs to be shutdown, it must be done gracefully:    
 `sudo singularity instance stop xdmod_web`   
 
-## INITIAL DATA LOAD  
-The init_load_data directory contains SGE accounting data in tar.gz format for bunk loading. The directory and its data are not provided by this repository, and they need to be prepared manually. The most recent build, we use the following files:  
+## INITIAL XDMOD DATABASE LOAD  
+The init_load_data directory contains SGE accounting data in tar.gz format for bunk loading. This data is not included in this repository, and should be prepared manually from the `sge_accounting` repository for the first deployment. Note down the commit hash when preping the tar.gz data, this hash will be come the first `FROM_COMMIT_HASH` used by automated new data upload. 
 
 ```
+# Example output of the init load task:
 TASK [init_loader : Load data to XDMoD] *********************************************************************************************************************************************************
 changed: [localhost] => (item=/init_load_data/CLUSTER60_accounting_2017_FIXED.tar.gz)
 changed: [localhost] => (item=/init_load_data/CLUSTER62_accounting_ALL.tar.gz)
@@ -35,10 +36,10 @@ This process is implemented in Ansible:
 `cd /SIF_XDMoD`  
 `ansible-playbook init_loader.yml`  
 
-Loading data to XDMoD is slow, it will take one or a few days depends the amount of data. After it's done, it brings the XDMoD data up to the commit `WHATEVER_COMMIT_HASH_IS` in the sge_accounting repository. 
+Loading data to XDMoD is slow, it will take one or a few days depends the amount of data. After it's done, it brings the XDMoD database up to the commit `FROM_COMMIT_HASH` in the sge_accounting repository. 
 
-## DATA REPOSITORY  
-Clone the sge_accounting repository to the container so it can be used for automated data upload:  
+## SGE ACCOUNTING REPOSITORY  
+Clone the sge_accounting repository to the container so it can be used for automated new data upload:  
 ```
 cd /
 eval $(ssh-agent -s)
@@ -50,7 +51,7 @@ Make sure it is cloned by SSH as required by passwordless git pull by cron (See 
 
 A special repo commit marker file needs to be created directly under the repository. The commit hash number is choosen according to which portion of the SGE data has been loaded in the init_load_data phase.  
 `cd /sge_accounting`  
-`echo "WHATEVER_COMMIT_HASH_IS" > FROM_COMMIT_HASH`  
+`echo "FROM_COMMIT_HASH" > FROM_COMMIT_HASH`  
 
 This only needs to be done once on the newly built container, it will be updated by the cron data load process automatically.
 
