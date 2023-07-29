@@ -1,4 +1,5 @@
-This project builds a Singularity SIF which runs XDMoD web. The SIF can be run on any node on the cluster with access facilitated by SSH tunneling.
+## WHAT
+Build, deploy and run XDMoD web as a Singularity/Apptainer container. Also demonstrate the automated XDMoD database ingestion from the accounting data which is periodically backup to the repository.
 
 ## BUILD  
 `sudo singularity build xdmod_srv.sif ./def_xdmod_srv.def`  
@@ -16,7 +17,7 @@ If the service needs to be shutdown, it must be done gracefully:
 `sudo singularity instance stop xdmod_web`   
 
 ## INITIAL XDMOD DATABASE LOAD  
-The init_load_data directory contains SGE accounting data in tar.gz format for bunk loading. This data is not included in this repository, and should be prepared manually from the `sge_accounting` repository for the first deployment. Note down the commit hash when preping the tar.gz data, this hash will be come the first `FROM_COMMIT_HASH` used by automated new data upload. 
+The init_load_data directory contains SGE accounting data in tar.gz format for bunk loading. This data is not included in this repository, and should be prepared manually from the [sge_accounting](https://github.com/klin938/sge_accounting) repository for the first deployment. Note down the commit hash when preping the tar.gz data, this hash will be come the first `FROM_COMMIT_HASH` used by automated new data upload. 
 
 ```
 # Example output of the init load task:
@@ -39,7 +40,7 @@ This process is implemented in Ansible:
 Loading data to XDMoD is slow, it will take one or a few days depends the amount of data. After it's done, it brings the XDMoD database up to the commit `FROM_COMMIT_HASH` in the sge_accounting repository. 
 
 ## SGE ACCOUNTING REPOSITORY  
-Clone the sge_accounting repository to the container so it can be used for automated new data upload:  
+Clone the [sge_accounting](https://github.com/klin938/sge_accounting) repository to the container so it can be used for automated new data upload:  
 ```
 cd /
 eval $(ssh-agent -s)
