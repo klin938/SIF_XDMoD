@@ -43,7 +43,7 @@ Clone the sge_accounting repository to the container so it can be used for autom
 cd /
 eval $(ssh-agent -s)
 ssh-add /xdmod_ansible/roles/common/files/dice_sif_rsa  
-git clone git@git.CHANGEME.edu.au:dice/sge_accounting.git  
+git clone git@github.com:klin938/sge_accounting.git 
 ```
 
 Make sure it is cloned by SSH as required by passwordless git pull by cron (See below).

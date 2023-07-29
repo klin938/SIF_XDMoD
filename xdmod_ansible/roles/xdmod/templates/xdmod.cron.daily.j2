@@ -11,7 +11,7 @@ printf "\n############################$(date)###################################
 eval $(ssh-agent -s)
 ssh-add /xdmod_ansible/roles/common/files/dice_sif_rsa
 
-cd /dice_sge_accounting
+cd /sge_accounting
 git pull
 
 sleep 10
